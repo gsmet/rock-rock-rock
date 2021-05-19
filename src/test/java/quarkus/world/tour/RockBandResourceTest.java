@@ -3,21 +3,28 @@ package quarkus.world.tour;
 import io.quarkus.test.junit.QuarkusTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.MethodOrderer;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 
 import java.util.List;
 
 import static io.restassured.RestAssured.given;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
 
 @QuarkusTest
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RockBandResourceTest {
 
     @Test
+    @Order(1)
     void theBandsAreInThePlace() {
         final Response response = given()
                 .when().get("/rock")
@@ -31,6 +38,7 @@ class RockBandResourceTest {
     }
 
     @Test
+    @Order(2)
     void aliveAreAlive() {
         final Response response = given()
                 .when().get("/rock/alive")
@@ -43,6 +51,7 @@ class RockBandResourceTest {
     }
 
     @Test
+    @Order(3)
     void myFavoriteBand() {
         given()
                 .when().get("/rock/2")
@@ -52,6 +61,8 @@ class RockBandResourceTest {
     }
 
     @Test
+    @Order(4)
+    @Disabled
     void is404ABand() {
         given()
                 .when().get("/rock/10")
@@ -61,6 +72,8 @@ class RockBandResourceTest {
     }
 
     @Test
+    @Order(0)
+    @Disabled
     void mayWeHaveANewBand() {
         final Band b = new Band();
         b.name = "Red Hot Chili Peppers";
