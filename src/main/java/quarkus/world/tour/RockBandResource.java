@@ -2,6 +2,7 @@ package quarkus.world.tour;
 
 import java.util.List;
 
+import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -11,8 +12,14 @@ import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
+import org.hibernate.search.mapper.orm.session.SearchSession;
+import org.jboss.resteasy.annotations.jaxrs.QueryParam;
+
 @Path("/rock")
 public class RockBandResource {
+
+    @Inject
+    SearchSession searchSession;
 
     @GET
     public List<Band> listBands() {
@@ -36,6 +43,23 @@ public class RockBandResource {
             throw new WebApplicationException(notFound);
         }
         return byId;
+    }
+    
+    @GET
+    @Path("search")
+    @Transactional
+    public List<Band> search(@QueryParam String pattern) {
+        return searchSession.search(Band.class)
+                .selectEntity()
+                .where(f -> {
+                    if (pattern != null && !pattern.isBlank()) {
+                        return f.simpleQueryString().field("name").matching(pattern);
+                    } else {
+                        return f.matchAll();
+                    }
+                })
+                .sort(f -> f.field("name_sort"))
+                .fetchAllHits();
     }
 
     @POST
