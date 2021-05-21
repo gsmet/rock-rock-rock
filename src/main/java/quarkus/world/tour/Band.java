@@ -17,8 +17,8 @@ public class Band extends PanacheEntity {
     public boolean alive;
 
     @Min(1945)
-    public int creationYear;
-    public int terminationYear = -1;
+    public Integer creationYear;
+    public Integer terminationYear = 0;
 
     public static List<Band> listAlive() {
         return Band.list("alive", true);
