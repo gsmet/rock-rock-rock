@@ -6,8 +6,6 @@ import javax.transaction.Transactional;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriBuilder;
 
@@ -23,19 +21,6 @@ public class RockBandResource {
     @Path("alive")
     public List<Band> listAlive() {
         return Band.listAlive();
-    }
-
-    @GET
-    @Path("{id}")
-    public Band findById(@PathParam("id") long id) {
-        final Band byId = Band.findById(id);
-        if (byId == null) {
-            Response notFound = Response.status(Response.Status.NOT_FOUND)
-                    .entity("no band found with id: " + id)
-                    .build();
-            throw new WebApplicationException(notFound);
-        }
-        return byId;
     }
 
     @POST
